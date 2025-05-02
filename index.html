@@ -14,7 +14,7 @@
     input, button, select, textarea { width:100%; padding:10px; margin:10px 0; border-radius:10px; font-size:16px; border:1px solid #ccc; }
     button.primary { background:#28a745; color:#fff; border:none; cursor:pointer; }
     button.primary:hover { background:#218838; }
-    .historyItem, .complaintItem { font-size:14px; border-bottom:1px solid #ccc; padding:5px 0; }
+    .historyItem, .complaintItem { font-size:14px; border-bottom:1px solid #ccc; padding:5px 0; word-wrap: break-word; }
     canvas { display:block; margin:10px auto; }
     .link { background:none; border:none; color:#007bff; cursor:pointer; text-decoration:underline; padding:0; font-size:14px; }
   </style>
@@ -29,10 +29,10 @@
   <div id="predictorContainer" class="container active">
     <h2>Advanced Water Change Predictor</h2>
     <input type="text" id="city" placeholder="Enter city (e.g., Chennai)" oninput="checkCity()" />
-    <div id="citySuggestions"></div>
+    <div id="citySuggestions" style="color:#555; font-size:14px;"></div>
     <div id="extraInputs" style="display:none;">
-      <input type="number" id="tempInput" placeholder="Enter Temperature (°C)">
-      <input type="number" id="phInput" placeholder="Enter pH value">
+      <input type="number" id="tempInput" placeholder="Enter Temperature (°C)" />
+      <input type="number" id="phInput" placeholder="Enter pH value" />
       <select id="pollutionInput">
         <option value="">Select Pollution Level</option>
         <option value="Good">Good</option>
@@ -42,9 +42,9 @@
     </div>
     <button class="primary" onclick="calculate()">Check</button>
     <button onclick="resetHistory()">Reset History</button>
-    <div id="result" class="output">Loading previous data...</div>
-    <div id="fact" class="funfact"></div>
-    <div id="tip" class="tip"></div>
+    <div id="result" class="output" style="white-space: pre-line; font-weight: bold; margin-top:10px;">Loading previous data...</div>
+    <div id="fact" class="funfact" style="margin-top:10px; font-style: italic; color:#555;"></div>
+    <div id="tip" class="tip" style="margin-top:10px; font-weight: 600; color:#217a1e;"></div>
     <div class="graph-container"><canvas id="pollutionGraph" width="350" height="150"></canvas></div>
   </div>
 
@@ -56,32 +56,32 @@
 
   <div id="complaintContainer" class="container">
     <h3>Submit Complaint</h3>
-    <input type="text" id="complaintLocation" placeholder="Enter your location">
-    <textarea id="complaintBox" placeholder="Enter your complaint or suggestion here..."></textarea>
+    <input type="text" id="complaintLocation" placeholder="Enter your location" />
+    <textarea id="complaintBox" placeholder="Enter your complaint or suggestion here..." rows="4"></textarea>
     <button class="primary" onclick="submitComplaint()">Submit Complaint</button>
-    <div id="complaintStatus"></div>
-    <button class="primary" onclick="showSection('officerLoginContainer')">Officer Login</button>
+    <div id="complaintStatus" style="margin-top:10px; font-weight: 600;"></div>
+    <button class="primary" style="margin-top:10px;" onclick="showSection('officerLoginContainer')">Officer Login</button>
   </div>
 
   <div id="officerLoginContainer" class="container">
     <h3>Officer Login</h3>
-    <input type="text" id="officerId" placeholder="Officer ID">
-    <input type="password" id="officerPassword" placeholder="Password">
+    <input type="text" id="officerId" placeholder="Officer ID" />
+    <input type="password" id="officerPassword" placeholder="Password" />
     <button class="primary" onclick="loginOfficer()">Login</button>
     <p>New officer? <button class="link" onclick="showSection('officerRegisterContainer')">Register</button></p>
-    <div id="officerLoginStatus"></div>
+    <div id="officerLoginStatus" style="margin-top:10px; font-weight: 600; color: red;"></div>
   </div>
 
   <div id="officerRegisterContainer" class="container">
     <h3>Officer Registration</h3>
-    <input type="text" id="newOfficerId" placeholder="OFF123">
-    <input type="password" id="newOfficerPassword" placeholder="Password">
-    <input type="password" id="newOfficerPasswordConfirm" placeholder="Confirm Password">
-    <input type="text" id="newOfficerName" placeholder="Name">
-    <input type="text" id="newOfficerDept" placeholder="Dept">
-    <input type="text" id="newOfficerLocation" placeholder="Assigned Area">
+    <input type="text" id="newOfficerId" placeholder="OFF123" />
+    <input type="password" id="newOfficerPassword" placeholder="Password" />
+    <input type="password" id="newOfficerPasswordConfirm" placeholder="Confirm Password" />
+    <input type="text" id="newOfficerName" placeholder="Name" />
+    <input type="text" id="newOfficerDept" placeholder="Dept" />
+    <input type="text" id="newOfficerLocation" placeholder="Assigned Area" />
     <button class="primary" onclick="registerOfficer()">Register</button>
-    <div id="officerRegisterStatus"></div>
+    <div id="officerRegisterStatus" style="margin-top:10px; font-weight: 600;"></div>
   </div>
 
   <div id="officerDashboardContainer" class="container">
@@ -90,184 +90,286 @@
     <button class="primary" onclick="showSection('changePasswordContainer')">Change Password</button>
     <h4>Complaints in your area</h4>
     <div id="assignedComplaintsList"></div>
-    <button class="primary" onclick="logoutOfficer()">Logout</button>
+    <button class="primary" style="margin-top:15px;" onclick="logoutOfficer()">Logout</button>
   </div>
 
   <div id="changePasswordContainer" class="container">
     <h3>Change Password</h3>
-    <input type="password" id="currentPassword" placeholder="Current Password">
-    <input type="password" id="newPassword" placeholder="New Password">
-    <input type="password" id="confirmNewPassword" placeholder="Confirm New Password">
+    <input type="password" id="currentPassword" placeholder="Current Password" />
+    <input type="password" id="newPassword" placeholder="New Password" />
+    <input type="password" id="confirmNewPassword" placeholder="Confirm New Password" />
     <button class="primary" onclick="changePassword()">Update Password</button>
-    <div id="changePasswordStatus"></div>
+    <div id="changePasswordStatus" style="margin-top:10px; font-weight: 600;"></div>
   </div>
 
-  <script>
-    function showSection(containerId) {
-      const sections = ['predictorContainer', 'historyContainer', 'complaintContainer',
-                        'officerLoginContainer', 'officerRegisterContainer',
-                        'officerDashboardContainer', 'changePasswordContainer'];
-      sections.forEach(id => document.getElementById(id).classList.remove('active'));
-      document.getElementById(containerId).classList.add('active');
-      document.getElementById('btnPredictor').classList.toggle('active', containerId === 'predictorContainer');
-      document.getElementById('btnHistory').classList.toggle('active', containerId === 'historyContainer');
-      document.getElementById('btnComplaints').classList.toggle('active', containerId === 'complaintContainer');
+<script>
+  function showSection(containerId) {
+    const sections = ['predictorContainer', 'historyContainer', 'complaintContainer',
+                      'officerLoginContainer', 'officerRegisterContainer',
+                      'officerDashboardContainer', 'changePasswordContainer'];
+    sections.forEach(id => document.getElementById(id).classList.remove('active'));
+    document.getElementById(containerId).classList.add('active');
+    document.getElementById('btnPredictor').classList.toggle('active', containerId === 'predictorContainer');
+    document.getElementById('btnHistory').classList.toggle('active', containerId === 'historyContainer');
+    document.getElementById('btnComplaints').classList.toggle('active', containerId === 'complaintContainer');
+  }
+
+  const cityData = {
+    "chennai": { temp: 34, ph: 6.8, pollution: "Moderate" },
+    "vijayawada": { temp: 30, ph: 7.0, pollution: "Moderate" },
+    "mumbai": { temp: 31, ph: 7.1, pollution: "Poor" },
+    "kolkata": { temp: 33, ph: 7.0, pollution: "Poor" },
+    "bangalore": { temp: 28, ph: 7.2, pollution: "Good" },
+    "hyderabad": { temp: 35, ph: 6.7, pollution: "Moderate" },
+    "pune": { temp: 29, ph: 7.0, pollution: "Good" }
+  };
+  function simulateFetchCurrentConditions() { return { temp: 37.71, ph: 6.9, pollution: "Poor" }; }
+
+  function calculateDays(temp, ph, pollution) {
+    let days = 5;
+    if (temp > 35) days -= 2;
+    else if (temp > 30) days -= 1;
+    if (ph < 6.5 || ph > 8.0) days -= 1;
+    if (pollution === "Poor") days -= 1;
+    else if (pollution === "Good") days += 1;
+    return Math.max(days, 1);
+  }
+
+  function checkCity() {
+    const city = document.getElementById('city').value.trim().toLowerCase();
+    const extra = document.getElementById('extraInputs');
+    const sug = document.getElementById('citySuggestions');
+    if (!city || cityData[city] || city === 'delhi') {
+      extra.style.display = 'none'; sug.innerText = '';
+    } else {
+      extra.style.display = 'block';
+      const arr = Object.keys(cityData).filter(c => c.includes(city));
+      sug.innerText = arr.length ? `Did you mean: ${arr.join(', ')}` : '';
     }
+  }
 
-    const cityData = {
-      "chennai": { temp: 34, ph: 6.8, pollution: "Moderate" },
-      "vijayawada": { temp: 30, ph: 7.0, pollution: "Moderate" },
-      "mumbai": { temp: 31, ph: 7.1, pollution: "Poor" },
-      "kolkata": { temp: 33, ph: 7.0, pollution: "Poor" },
-      "bangalore": { temp: 28, ph: 7.2, pollution: "Good" },
-      "hyderabad": { temp: 35, ph: 6.7, pollution: "Moderate" },
-      "pune": { temp: 29, ph: 7.0, pollution: "Good" }
-    };
-    function simulateFetchCurrentConditions() { return { temp: 37.71, ph: 6.9, pollution: "Poor" }; }
-
-    function calculateDays(temp, ph, pollution) {
-      let days = 5;
-      if (temp > 35) days -= 2;
-      else if (temp > 30) days -= 1;
-      if (ph < 6.5 || ph > 8.0) days -= 1;
-      if (pollution === "Poor") days -= 1;
-      else if (pollution === "Good") days += 1;
-      return Math.max(days, 1);
-    }
-
-    function checkCity() {
-      const city = document.getElementById('city').value.trim().toLowerCase();
-      const extra = document.getElementById('extraInputs');
-      const sug = document.getElementById('citySuggestions');
-      if (!city || cityData[city] || city === 'delhi') {
-        extra.style.display = 'none'; sug.innerText = '';
-      } else {
-        extra.style.display = 'block';
-        const arr = Object.keys(cityData).filter(c => c.includes(city));
-        sug.innerText = arr.length ? `Did you mean: ${arr.join(', ')}` : '';
-      }
-    }
-
-    let history = JSON.parse(localStorage.getItem('history') || '[]');
-    function updateHistory(entry) { history.push(entry); localStorage.setItem('history', JSON.stringify(history)); }
-    function renderHistory() {
-      const el = document.getElementById('historyList'); el.innerHTML = '';
-      history.forEach(h => { const d = document.createElement('div'); d.className='historyItem'; d.innerText=h; el.appendChild(d); });
-    }
-    function clearAllHistory() { if (confirm('Clear history?')) { history=[]; localStorage.setItem('history', '[]'); renderHistory(); }}
-
-    function drawPollutionGraph(pol) {
-      const c = document.getElementById('pollutionGraph'), ctx = c.getContext('2d');
-      ctx.clearRect(0,0,c.width,c.height);
-      ctx.fillStyle = pol==='Poor'?'#ff4c4c':pol==='Moderate'?'#ffe34c':'#4cff4c';
-      ctx.fillRect(20,50,300,50);
-      ctx.font='16px Arial'; ctx.fillStyle='#000'; ctx.fillText(`Pollution: ${pol}`,120,30);
-    }
-
-    function calculate() {
-      const city = document.getElementById('city').value.trim().toLowerCase();
-      let temp, ph, pollution;
-      if (city==='delhi') ({ temp, ph, pollution } = simulateFetchCurrentConditions());
-      else if (cityData[city]) ({ temp, ph, pollution } = cityData[city]);
-      else {
-        temp=parseFloat(document.getElementById('tempInput').value);
-        ph=parseFloat(document.getElementById('phInput').value);
-        pollution=document.getElementById('pollutionInput').value;
-        if (isNaN(temp)||isNaN(ph)||!pollution) { alert('Fill all fields'); return; }
-      }
-      const days = calculateDays(temp, ph, pollution);
-      drawPollutionGraph(pollution);
-      const facts=['Algae ancient','Biofuel research','Ecosystem impact','Quality matters'];
-      const fact = facts[Math.floor(Math.random()*facts.length)];
-      const tip = days<=2 ? 'Tip: Change often, clean debris.' : '';
-      document.getElementById('result').innerText = `City:${city}\nTemp:${temp}°C|pH:${ph}|Pollution:${pollution}\nChange in ${days} day(s)`;
-      document.getElementById('fact').innerText = fact;
-      document.getElementById('tip').innerText = tip;
-      updateHistory(`Checked ${city}: ${days}d`);
+  let history = JSON.parse(localStorage.getItem('history') || '[]');
+  function updateHistory(entry) {
+    history.push(entry);
+    localStorage.setItem('history', JSON.stringify(history));
+  }
+  function renderHistory() {
+    const el = document.getElementById('historyList'); el.innerHTML = '';
+    history.forEach(h => {
+      const d = document.createElement('div');
+      d.className = 'historyItem';
+      d.innerText = h;
+      el.appendChild(d);
+    });
+  }
+  function clearAllHistory() {
+    if (confirm('Clear history?')) {
+      history = [];
+      localStorage.setItem('history', '[]');
       renderHistory();
     }
+  }
 
-    let complaints = JSON.parse(localStorage.getItem('complaints') || '[]');
-    function submitComplaint() {
-      const loc = document.getElementById('complaintLocation').value.trim();
-      const txt = document.getElementById('complaintBox').value.trim();
-      const status = document.getElementById('complaintStatus');
-      if (loc && txt) {
-        complaints.push({ id: Date.now(), location: loc, text: txt });
-        localStorage.setItem('complaints', JSON.stringify(complaints));
-        status.innerText = 'Complaint recorded';
-        document.getElementById('complaintLocation').value='';
-        document.getElementById('complaintBox').value='';
-      } else status.innerText='Enter both fields';
+  function drawPollutionGraph(pol) {
+    const c = document.getElementById('pollutionGraph'), ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.fillStyle = pol === 'Poor' ? '#ff4c4c' : pol === 'Moderate' ? '#ffe34c' : '#4cff4c';
+    ctx.fillRect(20, 50, 300, 50);
+    ctx.font = '16px Arial';
+    ctx.fillStyle = '#000';
+    ctx.fillText(`Pollution: ${pol}`, 120, 30);
+  }
+
+  function calculate() {
+    const city = document.getElementById('city').value.trim().toLowerCase();
+    let temp, ph, pollution;
+    if (city === 'delhi') ({ temp, ph, pollution } = simulateFetchCurrentConditions());
+    else if (cityData[city]) ({ temp, ph, pollution } = cityData[city]);
+    else {
+      temp = parseFloat(document.getElementById('tempInput').value);
+      ph = parseFloat(document.getElementById('phInput').value);
+      pollution = document.getElementById('pollutionInput').value;
+      if (isNaN(temp) || isNaN(ph) || !pollution) {
+        alert('Fill all fields');
+        return;
+      }
     }
+    const days = calculateDays(temp, ph, pollution);
+    drawPollutionGraph(pollution);
+    const facts = ['Algae ancient', 'Biofuel research', 'Ecosystem impact', 'Quality matters'];
+    const fact = facts[Math.floor(Math.random() * facts.length)];
+    const tip = days <= 2 ? 'Tip: Change often, clean debris.' : '';
+    document.getElementById('result').innerText = `City: ${city}\nTemp: ${temp}°C | pH: ${ph} | Pollution: ${pollution}\nChange in ${days} day(s)`;
+    document.getElementById('fact').innerText = fact;
+    document.getElementById('tip').innerText = tip;
+    updateHistory(`Checked ${city}: ${days} days`);
+    renderHistory();
+  }
 
-    let officers = JSON.parse(localStorage.getItem('officers')||'[]');
-    function saveOfficers(){ localStorage.setItem('officers', JSON.stringify(officers)); }
+  let complaints = JSON.parse(localStorage.getItem('complaints') || '[]');
+  function submitComplaint() {
+    const loc = document.getElementById('complaintLocation').value.trim();
+    const txt = document.getElementById('complaintBox').value.trim();
+    const status = document.getElementById('complaintStatus');
 
-    function loginOfficer() {
-      const id = document.getElementById('officerId').value.trim();
-      const pw = document.getElementById('officerPassword').value;
-      const status = document.getElementById('officerLoginStatus');
-      const off = officers.find(o=>o.id===id && o.password===pw);
-      if (!off) { status.innerText='Invalid credentials'; return; }
-      localStorage.setItem('loggedOfficer', id);
-      document.getElementById('officerName').innerText = off.name;
-      document.getElementById('officerArea').innerText = off.location;
-      status.innerText='';
-      showSection('officerDashboardContainer');
-      renderAssigned();
+    if (loc && txt) {
+      complaints.push({ id: Date.now(), location: loc, text: txt });
+      localStorage.setItem('complaints', JSON.stringify(complaints));
+
+      status.style.color = 'green';
+      status.innerText = 'Complaint recorded';
+      document.getElementById('complaintLocation').value = '';
+      document.getElementById('complaintBox').value = '';
+
+      // ✅ Refresh officer dashboard if already logged in
+      if (localStorage.getItem('loggedOfficer')) {
+        renderAssigned();
+      }
+    } else {
+      status.style.color = 'red';
+      status.innerText = 'Enter both fields';
     }
+  }
 
-    function registerOfficer() {
-      const id = document.getElementById('newOfficerId').value.trim();
-      const pw = document.getElementById('newOfficerPassword').value;
-      const pwc = document.getElementById('newOfficerPasswordConfirm').value;
-      const name = document.getElementById('newOfficerName').value.trim();
-      const dept = document.getElementById('newOfficerDept').value.trim();
-      const loc = document.getElementById('newOfficerLocation').value.trim();
-      const status = document.getElementById('officerRegisterStatus');
-      if (!/^OFF\d+$/.test(id)) { status.innerText='ID must start OFF'; return; }
-      if (!pw || pw!==pwc) { status.innerText='Passwords must match'; return; }
-      if (officers.some(o=>o.id===id)) { status.innerText='ID exists'; return; }
-      officers.push({ id, password: pw, name, dept, location: loc });
-      saveOfficers();
-      status.innerText='Registered';
-      setTimeout(()=>showSection('officerLoginContainer'), 1000);
+  let officers = JSON.parse(localStorage.getItem('officers') || '[]');
+  function saveOfficers() {
+    localStorage.setItem('officers', JSON.stringify(officers));
+  }
+
+  function loginOfficer() {
+    const id = document.getElementById('officerId').value.trim();
+    const pw = document.getElementById('officerPassword').value;
+    const status = document.getElementById('officerLoginStatus');
+    const off = officers.find(o => o.id === id && o.password === pw);
+    if (!off) {
+      status.style.color = 'red';
+      status.innerText = 'Invalid credentials';
+      return;
     }
+    localStorage.setItem('loggedOfficer', id);
+    document.getElementById('officerName').innerText = off.name;
+    document.getElementById('officerArea').innerText = off.location;
+    status.innerText = '';
+    showSection('officerDashboardContainer');
+    renderAssigned();
+  }
 
-    function renderAssigned() {
-      const id = localStorage.getItem('loggedOfficer');
-      const off = officers.find(o=>o.id===id);
-      const list = document.getElementById('assignedComplaintsList'); list.innerHTML='';
-      complaints.filter(c=>c.location.toLowerCase()===off.location.toLowerCase())
-        .forEach(c=>{ const d=document.createElement('div'); d.className='complaintItem'; d.innerText=`#${c.id}@${c.location}: ${c.text}`; list.appendChild(d); });
+  function registerOfficer() {
+    const id = document.getElementById('newOfficerId').value.trim();
+    const pw = document.getElementById('newOfficerPassword').value;
+    const pwc = document.getElementById('newOfficerPasswordConfirm').value;
+    const name = document.getElementById('newOfficerName').value.trim();
+    const dept = document.getElementById('newOfficerDept').value.trim();
+    const loc = document.getElementById('newOfficerLocation').value.trim();
+    const status = document.getElementById('officerRegisterStatus');
+    if (!/^OFF\d+$/.test(id)) {
+      status.style.color = 'red';
+      status.innerText = 'ID must start OFF';
+      return;
     }
-
-    function logoutOfficer() {
-      localStorage.removeItem('loggedOfficer');
-      showSection('complaintContainer');
+    if (!pw || pw !== pwc) {
+      status.style.color = 'red';
+      status.innerText = 'Passwords must match';
+      return;
     }
-
-    function changePassword() {
-      const id = localStorage.getItem('loggedOfficer');
-      const off = officers.find(o=>o.id===id);
-      const cur = document.getElementById('currentPassword').value;
-      const nxt = document.getElementById('newPassword').value;
-      const cnf = document.getElementById('confirmNewPassword').value;
-      const status = document.getElementById('changePasswordStatus');
-      if (!off || off.password!==cur) { status.innerText='Current incorrect'; return; }
-      if (!nxt || nxt!==cnf) { status.innerText='New passwords must match'; return; }
-      off.password = nxt;
-      saveOfficers();
-      status.innerText='Password updated';
-      setTimeout(()=>showSection('officerDashboardContainer'), 1000);
+    if (officers.some(o => o.id === id)) {
+      status.style.color = 'red';
+      status.innerText = 'ID exists';
+      return;
     }
+    officers.push({ id, password: pw, name, dept, location: loc });
+    saveOfficers();
+    status.style.color = 'green';
+    status.innerText = 'Registered';
+    setTimeout(() => showSection('officerLoginContainer'), 1000);
+  }
 
-    window.onload = function() {
+  function renderAssigned() {
+    const id = localStorage.getItem('loggedOfficer');
+    const off = officers.find(o => o.id === id);
+    if (!off) return;
+
+    const list = document.getElementById('assignedComplaintsList');
+    list.innerHTML = '';
+
+    // ✅ Filter by partial location match (case-insensitive)
+    const filtered = complaints.filter(c =>
+      c.location.trim().toLowerCase().includes(off.location.trim().toLowerCase())
+    );
+
+    if (filtered.length === 0) {
+      const noComplaints = document.createElement('div');
+      noComplaints.className = 'complaintItem';
+      noComplaints.innerText = "No complaints in your area.";
+      list.appendChild(noComplaints);
+    } else {
+      filtered.forEach(c => {
+        const d = document.createElement('div');
+        d.className = 'complaintItem';
+        d.innerText = `#${c.id} @ ${c.location}: ${c.text}`;
+        list.appendChild(d);
+      });
+    }
+  }
+
+  function logoutOfficer() {
+    localStorage.removeItem('loggedOfficer');
+    showSection('complaintContainer');
+  }
+
+  function changePassword() {
+    const id = localStorage.getItem('loggedOfficer');
+    const off = officers.find(o => o.id === id);
+    const cur = document.getElementById('currentPassword').value;
+    const nxt = document.getElementById('newPassword').value;
+    const cnf = document.getElementById('confirmNewPassword').value;
+    const status = document.getElementById('changePasswordStatus');
+    if (!off || off.password !== cur) {
+      status.style.color = 'red';
+      status.innerText = 'Current password incorrect';
+      return;
+    }
+    if (!nxt || nxt !== cnf) {
+      status.style.color = 'red';
+      status.innerText = 'New passwords must match';
+      return;
+    }
+    off.password = nxt;
+    saveOfficers();
+    status.style.color = 'green';
+    status.innerText = 'Password updated';
+    setTimeout(() => showSection('officerDashboardContainer'), 1000);
+  }
+
+  function resetHistory() {
+    if (confirm('Reset prediction history?')) {
+      history = [];
+      localStorage.setItem('history', JSON.stringify(history));
       renderHistory();
-      complaints = JSON.parse(localStorage.getItem('complaints') || '[]');
-      officers = JSON.parse(localStorage.getItem('officers') || '[]');
-    };
-  </script>
+      document.getElementById('result').innerText = '';
+      document.getElementById('fact').innerText = '';
+      document.getElementById('tip').innerText = '';
+      const c = document.getElementById('pollutionGraph');
+      c.getContext('2d').clearRect(0, 0, c.width, c.height);
+    }
+  }
+
+  window.onload = function () {
+    renderHistory();
+    complaints = JSON.parse(localStorage.getItem('complaints') || '[]');
+    officers = JSON.parse(localStorage.getItem('officers') || '[]');
+    const loggedId = localStorage.getItem('loggedOfficer');
+    if (loggedId) {
+      const off = officers.find(o => o.id === loggedId);
+      if (off) {
+        document.getElementById('officerName').innerText = off.name;
+        document.getElementById('officerArea').innerText = off.location;
+        showSection('officerDashboardContainer');
+        renderAssigned();
+      }
+    }
+  };
+</script>
+
 </body>
 </html>
